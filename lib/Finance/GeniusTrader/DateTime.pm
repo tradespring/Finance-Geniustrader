@@ -5,21 +5,24 @@ package Finance::GeniusTrader::DateTime;
 # version 2 or (at your option) any later version.
 
 use strict;
-use vars qw(@ISA @EXPORT $PERIOD_TICK $PERIOD_1MIN $PERIOD_5MIN $PERIOD_10MIN
+use vars qw(@ISA @EXPORT $PERIOD_TICK $PERIOD_1MIN $PERIOD_2MIN $PERIOD_2MIN1 $PERIOD_5MIN $PERIOD_10MIN $PERIOD_10MIN5
 	    $PERIOD_15MIN $PERIOD_30MIN $PERIOD_30MIN15 $HOUR $PERIOD_2HOUR $PERIOD_3HOUR $PERIOD_4HOUR
 	    $DAY $WEEK $MONTH $YEAR %NAMES);
 
 require Exporter;
 @ISA = qw(Exporter);
-@EXPORT = qw($PERIOD_TICK $PERIOD_1MIN $PERIOD_5MIN $PERIOD_10MIN
+@EXPORT = qw($PERIOD_TICK $PERIOD_1MIN $PERIOD_2MIN $PERIOD_2MIN1 $PERIOD_5MIN $PERIOD_10MIN
 	     $PERIOD_15MIN $PERIOD_30MIN $PERIOD_30MIN15 $HOUR $PERIOD_2HOUR $PERIOD_3HOUR $PERIOD_4HOUR $DAY $WEEK $MONTH $YEAR);
 
 #ALL#  use Log::Log4perl qw(:easy);
 
 $PERIOD_TICK = 1;
 $PERIOD_1MIN = 10;
+$PERIOD_2MIN = 15;
+$PERIOD_2MIN1 = 16;
 $PERIOD_5MIN = 30;
 $PERIOD_10MIN = 40;
+$PERIOD_10MIN5 = 41;
 $PERIOD_15MIN = 45;
 $PERIOD_30MIN = 50;
 $PERIOD_30MIN15 = 51;
@@ -35,8 +38,11 @@ $YEAR = 100;
 %NAMES = (
     $PERIOD_TICK => "tick",
     $PERIOD_1MIN => "1min",
+    $PERIOD_2MIN => "2min",
+    $PERIOD_2MIN1 => "2min1",
     $PERIOD_5MIN => "5min",
     $PERIOD_10MIN => "10min",
+    $PERIOD_10MIN5 => "10min5",
     $PERIOD_15MIN => "15min",
     $PERIOD_30MIN => "30min",
     $PERIOD_30MIN15 => "30min15",
@@ -52,8 +58,11 @@ $YEAR = 100;
 
 require Finance::GeniusTrader::DateTime::Tick;
 require Finance::GeniusTrader::DateTime::1Min;
+require Finance::GeniusTrader::DateTime::2Min;
+require Finance::GeniusTrader::DateTime::2Min1;
 require Finance::GeniusTrader::DateTime::5Min;
 require Finance::GeniusTrader::DateTime::10Min;
+require Finance::GeniusTrader::DateTime::10Min5;
 require Finance::GeniusTrader::DateTime::15Min;
 require Finance::GeniusTrader::DateTime::30Min;
 require Finance::GeniusTrader::DateTime::30Min15;
@@ -111,8 +120,11 @@ sub map_date_to_time {
 
     $timeframe == $PERIOD_TICK && return Finance::GeniusTrader::DateTime::Tick::map_date_to_time($date);
     $timeframe == $PERIOD_1MIN && return Finance::GeniusTrader::DateTime::1Min::map_date_to_time($date);
+    $timeframe == $PERIOD_2MIN && return Finance::GeniusTrader::DateTime::2Min::map_date_to_time($date);
+    $timeframe == $PERIOD_2MIN1 && return Finance::GeniusTrader::DateTime::2Min1::map_date_to_time($date);
     $timeframe == $PERIOD_5MIN && return Finance::GeniusTrader::DateTime::5Min::map_date_to_time($date);
     $timeframe == $PERIOD_10MIN && return Finance::GeniusTrader::DateTime::10Min::map_date_to_time($date);
+    $timeframe == $PERIOD_10MIN5 && return Finance::GeniusTrader::DateTime::10Min5::map_date_to_time($date);
     $timeframe == $PERIOD_15MIN && return Finance::GeniusTrader::DateTime::15Min::map_date_to_time($date);
     $timeframe == $PERIOD_30MIN && return Finance::GeniusTrader::DateTime::30Min::map_date_to_time($date);
     $timeframe == $PERIOD_30MIN15 && return Finance::GeniusTrader::DateTime::30Min15::map_date_to_time($date);
@@ -131,8 +143,11 @@ sub map_time_to_date {
 
     $timeframe == $PERIOD_TICK && return Finance::GeniusTrader::DateTime::Tick::map_time_to_date($time);
     $timeframe == $PERIOD_1MIN && return Finance::GeniusTrader::DateTime::1Min::map_time_to_date($time);
+    $timeframe == $PERIOD_2MIN && return Finance::GeniusTrader::DateTime::2Min::map_time_to_date($time);
+    $timeframe == $PERIOD_2MIN1 && return Finance::GeniusTrader::DateTime::2Min1::map_time_to_date($time);
     $timeframe == $PERIOD_5MIN && return Finance::GeniusTrader::DateTime::5Min::map_time_to_date($time);
     $timeframe == $PERIOD_10MIN && return Finance::GeniusTrader::DateTime::10Min::map_time_to_date($time);
+    $timeframe == $PERIOD_10MIN5 && return Finance::GeniusTrader::DateTime::10Min5::map_time_to_date($time);
     $timeframe == $PERIOD_15MIN && return Finance::GeniusTrader::DateTime::15Min::map_time_to_date($time);
     $timeframe == $PERIOD_30MIN && return Finance::GeniusTrader::DateTime::30Min::map_time_to_date($time);
     $timeframe == $PERIOD_30MIN15 && return Finance::GeniusTrader::DateTime::30Min15::map_time_to_date($time);
@@ -166,7 +181,7 @@ Returns the list of timeframes that are managed by the DateTime framework.
 =cut
 sub list_of_timeframe {
     return (
-	    $PERIOD_TICK, $PERIOD_1MIN, $PERIOD_5MIN, $PERIOD_10MIN,
+	    $PERIOD_TICK, $PERIOD_1MIN,  $PERIOD_2MIN, $PERIOD_2MIN1, $PERIOD_5MIN, $PERIOD_10MIN, $PERIOD_10MIN5,
 	    $PERIOD_15MIN, $PERIOD_30MIN, $PERIOD_30MIN15, $HOUR, $PERIOD_2HOUR, $PERIOD_3HOUR,
 	    $PERIOD_4HOUR, $DAY, $WEEK, $MONTH, $YEAR
 	   );
@@ -214,8 +229,11 @@ sub timeframe_ratio {
 
 	$first == $PERIOD_TICK && die("Cannot set timeframe ratio for tick data");
     $first == $PERIOD_1MIN && return (Finance::GeniusTrader::DateTime::Hour::timeframe_ratio($second) / 60);
+    $first == $PERIOD_2MIN && return (Finance::GeniusTrader::DateTime::Hour::timeframe_ratio($second) / 30);
+    $first == $PERIOD_2MIN1 && return (Finance::GeniusTrader::DateTime::Hour::timeframe_ratio($second) / 30);
     $first == $PERIOD_5MIN && return (Finance::GeniusTrader::DateTime::Hour::timeframe_ratio($second) / 12);
     $first == $PERIOD_10MIN && return (Finance::GeniusTrader::DateTime::Hour::timeframe_ratio($second) / 6);
+    $first == $PERIOD_10MIN5 && return (Finance::GeniusTrader::DateTime::Hour::timeframe_ratio($second) / 6);
     $first == $PERIOD_15MIN && return (Finance::GeniusTrader::DateTime::Hour::timeframe_ratio($second) / 4);
     $first == $PERIOD_30MIN && return (Finance::GeniusTrader::DateTime::Hour::timeframe_ratio($second) / 2);
     $first == $PERIOD_30MIN15 && return (Finance::GeniusTrader::DateTime::Hour::timeframe_ratio($second) / 2);
