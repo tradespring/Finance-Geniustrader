@@ -12,6 +12,7 @@ no_index directory => 'docs';
 no_index directory => 'website';
 
 requires 'Date::Calc';
+requires 'Date::Manip';
 requires 'XML::LibXML';
 requires 'Compress::Zlib';
 
