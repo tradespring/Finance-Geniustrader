@@ -158,7 +158,7 @@ sub calculate_interval {
     for (my $i = $first; $i <= $last; $i++)
     {
 	$self->calculate($calc, $i)
-            if $nb_items == 1 && !$indic->is_available($name, $i);
+            if !$indic->is_available($name, $i);
     }
     return;
 }
@@ -179,6 +179,7 @@ sub load_from_cache {
     my ($short) = $standard_name =~ m/[\S:](\w+)\s/;
     my $file = "$pdir/$short.".sha1_hex($standard_name).".i";
 
+    ++$self->{cache_tried};
     return unless -e $file;
     open my $fh, '<', $file or die $!;
 
@@ -189,7 +190,9 @@ sub load_from_cache {
         chomp;
         my @vals = split(',');
         for (0..$#names) {
-            $indic->set($names[$_], $i, $vals[$_] eq 'NA' ? undef : $vals[$_])
+            # inlining set:
+            # $indic->set($names[$_], $i, $vals[$_] eq 'NA' ? undef : $vals[$_])
+            $indic->{'values'}{$names[$_]}[$i] = $vals[$_] eq 'NA' ? undef : $vals[$_];
         }
         ++$i;
     }
