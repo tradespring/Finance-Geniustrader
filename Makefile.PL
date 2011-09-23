@@ -15,6 +15,7 @@ requires 'Date::Calc';
 requires 'Date::Manip';
 requires 'XML::LibXML';
 requires 'Compress::Zlib';
+requires 'Digest::SHA1';
 
 feature 'Charting with GD',
     'GD' => 0;
