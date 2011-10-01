@@ -15,7 +15,7 @@ use Time::Local;
 =head1 Finance::GeniusTrader::DateTime::30Min15
 
 This module treat dates describing an half-hour cutting at 15 and 45 minute of each hour. They have the following format :
-YYYY-MM-DD HH:N0:00
+YYYY-MM-DD HH:N5:00
 
 =cut
 sub map_date_to_time {
@@ -27,13 +27,18 @@ sub map_date_to_time {
     elsif ($n >= 15) { $n=15 }
     else  { $n = 45, $h-- };
 
+    if ($h < 0) {
+        $h = 23;
+        --$d;
+    }
     return timelocal(0, $n, $h, $d, $m - 1, $y - 1900);
 }
 
 sub map_time_to_date {
     my ($time) = @_;
     my ($sec, $min, $hour, $d, $m, $y, $wd, $yd) = localtime($time);
-	if ($min>=30) {$min=30;} else {$min=0;}
+    if ($min>=45) {$min=45;} elsif ($min >=15) { $min = 15 }
+    else {$min = 45, $hour--;}
     return sprintf("%04d-%02d-%02d %02d:%02d:00", $y + 1900, $m + 1, $d, $hour, $min);
 }
 
