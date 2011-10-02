@@ -18,6 +18,7 @@ requires 'Compress::Zlib';
 requires 'Digest::SHA1';
 
 feature 'Charting with GD',
+    -default => 0,
     'GD' => 0;
 
 feature 'Charting with Image::Magick',
